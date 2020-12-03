@@ -10,17 +10,13 @@ class Day2(AOCDay):
         self.right = []
 
         for line in self.inputData:
-            result = line.split(':')
-            policy = result[0]
-
-            self.passwords.append(result[1].strip())
-
-            result = policy.split(' ')
-            self.chars.append(result[1])
-
-            result = result[0].split('-')
-            self.left.append(int(result[0]))
-            self.right.append(int(result[1]))
+            policy, char, password = line.split(' ')
+            left, right = policy.split('-')
+    
+            self.passwords.append(password)
+            self.left.append(int(left))
+            self.right.append(int(right))
+            self.chars.append(char[:-1])
 
 
     def part1(self):
