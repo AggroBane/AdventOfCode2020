@@ -100,8 +100,7 @@ class AOCDay:
         # Reading and appending each line to the inputData
         for line in file:
             line = line.replace('\n', '')
-            if(line != ''):
-                self.inputData.append(line)
+            self.inputData.append(line)
 
         # Closing filestream
         file.close()
