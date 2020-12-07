@@ -40,9 +40,6 @@ class Day5(AOCDay):
 
         return maxSeatid
     
-
-    # row : 0 à 127
-    # col : 0 à 7
     def part2(self):
         allTickets = []
         for i in range(128):

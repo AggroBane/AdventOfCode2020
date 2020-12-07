@@ -1,4 +1,7 @@
-import re
+test = [1,2,3,4]
 
-if not re.search("^#[0-9a-f]{6}$", "#18175z"):
-    print("aaaaaaaaaaaaaaaaaaaaaaa")
+testSet = {4,5,6,7}
+
+testSet.update(test)
+
+print(testSet)
