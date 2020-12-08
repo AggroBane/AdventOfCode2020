@@ -23,11 +23,11 @@ class Day6(AOCDay):
     def part1(self):
         cpt = 0
         for group in self.inputData:
-            yes = set()
-
+            yes = []
             for personne in group:
                 for rep in personne:
-                    yes.update(rep)
+                    if rep in yes:
+                        yes.append(rep)
 
             cpt += len(yes)
         return cpt
