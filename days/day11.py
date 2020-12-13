@@ -5,120 +5,57 @@ class Day11(AOCDay):
     def common(self):
         return 0
 
-
     def getNeighbours(self, matrix, i, j):
-        neighbours = []
-
-        if i - 1 >= 0:
-            # Up
-            neighbours.append(matrix[i - 1][j])
-        if i - 1 >= 0 and j - 1 >= 0:
-            # Up-left
-            neighbours.append(matrix[i - 1][j - 1])
-        if i - 1 >= 0 and j + 1 <= len(matrix[0]) - 1:
-            # Up-right
-            neighbours.append(matrix[i - 1][j + 1])
-        if i + 1 <= len(matrix) - 1:
-            # Down
-            neighbours.append(matrix[i + 1][j])
-        if i + 1 <= len(matrix) - 1 and  j - 1 >= 0:
-            # Down-left
-            neighbours.append(matrix[i + 1][j - 1])
-        if i + 1 <= len(matrix) - 1 and j + 1 <= len(matrix[0]) - 1:
-            # Down-right
-            neighbours.append(matrix[i + 1][j + 1])
-        if j - 1 >= 0:
-            # Left
-            neighbours.append(matrix[i][j - 1])
-        if j + 1 <= len(matrix[0]) - 1:
-            # Right
-            neighbours.append(matrix[i][j + 1])
-
         occupied = 0
-        for neighbour in neighbours:
-            if neighbour == '#':
+        directions = [(0, -1), (0, 1), (1, 0), (1, -1), (1, 1), (-1, 0), (-1, -1), (-1, 1)]
+
+        # Pour chacune des 8 directions
+        for direction in directions:
+            i2 = i + direction[0]
+            j2 = j + direction[1]
+
+            # Si le siège n'est pas out of bound et qu'il s'agit d'un '#'
+            if i2 >= 0 and j2 >= 0 and i2 <= len(matrix) - 1 and j2 <= len(matrix[0]) - 1 and matrix[i2][j2] == '#':
                 occupied += 1
 
         return occupied
 
-    def getOccupiedInDirection(self, matrix, i, j, iStep, jStep):
+
+    def getOccupiedSeatInSight(self, matrix, i , j):
         occupied = 0
-        
-        i2 = i + iStep
-        j2 = j + jStep
+        directions = [(0, -1), (0, 1), (1, 0), (1, -1), (1, 1), (-1, 0), (-1, -1), (-1, 1)]
 
-        while i2 >= 0 and j2 >= 0 and i2 <= len(matrix) - 1 and j2 <= len(matrix[0]) - 1:
-            if matrix[i2][j2] == '#':
-                occupied += 1
-                break
-            elif matrix[i2][j2] == 'L':
-                break
+        # Pour chacune des 8 directions
+        for direction in directions:      
+            i2 = i + direction[0]
+            j2 = j + direction[1]
 
-            i2 += iStep
-            j2 += jStep
+            # On continu tant qu'on est pas out of bound
+            while i2 >= 0 and j2 >= 0 and i2 <= len(matrix) - 1 and j2 <= len(matrix[0]) - 1:
+                # Si on trouve un '#' ou un 'L' on break
+                if matrix[i2][j2] == '#':
+                    occupied += 1
+                    break
+                elif matrix[i2][j2] == 'L':
+                    break
+
+                # Si c'est un '.' on continue
+                i2 += direction[0]
+                j2 += direction[1]
 
         return occupied
 
-    def getSeatInSight(self, matrix, i , j):
-        occupied = 0
-
-        # Left
-        occupied += self.getOccupiedInDirection(matrix, i, j, 0, -1)
-
-        # Right
-        occupied += self.getOccupiedInDirection(matrix, i, j, 0, 1)
-
-        # Up
-        occupied += self.getOccupiedInDirection(matrix, i, j, 1, 0)
-
-        # Up-Left
-        occupied += self.getOccupiedInDirection(matrix, i, j, 1, -1)
-
-        # Up-Right
-        occupied += self.getOccupiedInDirection(matrix, i, j, 1, 1)
-
-        # Down
-        occupied += self.getOccupiedInDirection(matrix, i, j, -1, 0)
-
-        # Down-left
-        occupied += self.getOccupiedInDirection(matrix, i, j, -1, -1)
-
-        # Down-right
-        occupied += self.getOccupiedInDirection(matrix, i, j, -1, 1)
-
-        return occupied
-
-    def iteration(self, seatMatrix):
+    def iteration(self, seatMatrix, neighbourFunc, nbUntilFree):
         newSeatMatrix = []
 
         for i in range(len(seatMatrix)):
             newSeatMatrix.append([])
-
             for j in range(len(seatMatrix[0])):
-                qtNeightbours = self.getNeighbours(seatMatrix, i, j)
+                qtNeightbours = neighbourFunc(seatMatrix, i, j)
 
                 if seatMatrix[i][j] == 'L' and qtNeightbours == 0:
                     newSeatMatrix[i].append('#')
-                elif seatMatrix[i][j] == '#' and qtNeightbours >= 4:
-
-                    newSeatMatrix[i].append('L')
-                else:
-                    newSeatMatrix[i].append(seatMatrix[i][j])
-
-        return newSeatMatrix
-
-    def iteration2(self, seatMatrix):
-        newSeatMatrix = []
-
-        for i in range(len(seatMatrix)):
-            newSeatMatrix.append([])
-
-            for j in range(len(seatMatrix[0])):
-                qtNeightbours = self.getSeatInSight(seatMatrix, i, j)
-
-                if seatMatrix[i][j] == 'L' and qtNeightbours == 0:
-                    newSeatMatrix[i].append('#')
-                elif seatMatrix[i][j] == '#' and qtNeightbours >= 5:
+                elif seatMatrix[i][j] == '#' and qtNeightbours >= nbUntilFree:
                     newSeatMatrix[i].append('L')
                 else:
                     newSeatMatrix[i].append(seatMatrix[i][j])
@@ -126,12 +63,12 @@ class Day11(AOCDay):
         return newSeatMatrix
 
     def part1(self):
-        oldSeatMatrix = self.inputData.copy()
-        seatMatrix = self.iteration(oldSeatMatrix)
+        oldSeatMatrix = self.inputData
+        seatMatrix = self.iteration(oldSeatMatrix, self.getNeighbours, 4)
 
         while seatMatrix != oldSeatMatrix:
-            oldSeatMatrix = seatMatrix.copy()
-            seatMatrix = self.iteration(oldSeatMatrix)
+            oldSeatMatrix = seatMatrix
+            seatMatrix = self.iteration(oldSeatMatrix, self.getNeighbours, 4)
 
         occupied = 0
         for line in seatMatrix:
@@ -140,12 +77,12 @@ class Day11(AOCDay):
         return occupied
     
     def part2(self):
-        oldSeatMatrix = self.inputData.copy()
-        seatMatrix = self.iteration2(oldSeatMatrix)
+        oldSeatMatrix = self.inputData
+        seatMatrix = self.iteration(oldSeatMatrix, self.getOccupiedSeatInSight, 5)
 
         while seatMatrix != oldSeatMatrix:
-            oldSeatMatrix = seatMatrix.copy()
-            seatMatrix = self.iteration2(oldSeatMatrix)
+            oldSeatMatrix = seatMatrix
+            seatMatrix = self.iteration(oldSeatMatrix, self.getOccupiedSeatInSight, 5)
 
         occupied = 0
         for line in seatMatrix:
