@@ -1,7 +1,9 @@
-test = [1,2,3,4]
+def ooga():
+    print("aaaaa")
 
-testSet = {4,5,6,7}
+yahu = {}
 
-testSet.update(test)
+yahu["ooga"] = ooga
 
-print(testSet)
+
+yahu["ooga"]()
