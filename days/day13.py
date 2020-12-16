@@ -57,6 +57,9 @@ class Day13(AOCDay):
             #startTime += 1
 
         #return startTime
+
+
+        # Dont use this solution, its trash :(
         i = 0
         n = 0
 
