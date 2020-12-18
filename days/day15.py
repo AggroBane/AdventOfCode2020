@@ -12,10 +12,9 @@ class Day15(AOCDay):
         return self.play(2020)
 
     def part2(self):
-        return self.run(30000000)
+        return self.play(30000000)
 
     def play(self, times):
-        
         dicHistory = {}
         for i in range(len(self.spokenNumbers)):
             dicHistory[self.spokenNumbers[i]] = [i]
@@ -33,7 +32,7 @@ class Day15(AOCDay):
                 newNum = currentTurn - iOcc
             
             if newNum not in dicHistory:
-                dicHistory[newNum] = [currentTurn]
+                dicHistory[newNum] = []
 
             self.spokenNumbers.append(newNum)
             dicHistory[newNum].append(currentTurn)
